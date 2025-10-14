@@ -1,0 +1,108 @@
+#http://www.ory.sh/docs/hydra/reference/configuration
+version: v2.3.0
+dsn: memory
+dev: true
+
+serve:
+  cookies:
+    names:
+      login_csrf: oauth2_login_csrf
+      consent_csrf: oauth2_consent_csrf
+      session: oauth2_session
+  public:
+    port: 4444
+    cors:
+      enabled: true
+      allowed_origins:
+        - http://localhost:3000
+      allowed_methods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+        - OPTIONS
+        - HEAD
+      allowed_headers:
+        - Authorization
+        - Content-Type
+        - Accept
+        - Origin
+        - Cookies
+
+  admin:
+    port: 4445
+
+urls:
+  self:
+    issuer: http://localhost:3000
+    public: http://localhost:3000
+    admin: http://hydra:4445
+  login: http://localhost:3000/auth/login
+  registration: http://localhost:3000/auth/registration
+  consent: http://localhost:3000/consent
+  logout: http://localhost:3000/auth/logout
+  error: http://localhost:3000/error
+  post_logout_redirect: http://localhost:3000
+  identity_provider:
+    url: http://kratos:4434
+    publicUrl: http://localhost:3000
+
+strategies:
+  scope: exact
+  access_token: opaque
+  jwt:
+    scope_claim: list
+
+ttl:
+  login_consent_request: 1h
+  access_token: 1h
+  refresh_token: 1h
+  id_token: 1h
+  auth_code: 1h
+
+oauth2:
+  expose_internal_errors: true
+  session:
+    encrypt_at_rest: false
+  exclude_not_before_claim: true
+  allowed_top_level_claims:
+    - username
+    - email
+    - user_uuid
+  mirror_top_level_claims: false
+  hashers:
+    algorithm: pbkdf2
+    bcrypt:
+      cost: 4
+    pbkdf2:
+      iterations: 1
+  pkce:
+    enforced: true
+    enforced_for_public_clients: true
+  client_credentials:
+    default_grant_allowed_scope: false
+  grant:
+    refresh_token:
+      rotation_grace_period: 1h
+    jwt:
+      jti_optional: false
+      iat_optional: false
+      max_ttl: 1h
+# refresh_token_hook: http://localhost:3000/token-refresh-hook
+# token_hook: http://localhost:3000/token-hook
+
+secrets:
+  system:
+    - this-is-the-primary-secret
+    - this-is-an-old-secret
+    - this-is-another-old-secret
+  cookie:
+    - this-is-the-primary-secret
+    - this-is-an-old-secret
+    - this-is-another-old-secret
+
+log:
+  level: debug
+  format: json
+  leak_sensitive_values: true

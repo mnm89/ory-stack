@@ -1,0 +1,74 @@
+name: ory-stack
+services:
+  kratos:
+    image: oryd/kratos:v1.3.1
+    entrypoint: ["/bin/sh", "/docker-entrypoint.sh"]
+    container_name: kratos
+    restart: "on-failure"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - DSN=${KRATOS_DNS:-memory}
+    volumes:
+      - type: bind
+        source: ./kratos/config
+        target: /etc/config/kratos
+      - type: bind
+        source: ./kratos/docker-entrypoint.sh
+        target: /docker-entrypoint.sh
+    develop:
+      watch:
+        - action: restart
+          path: ./kratos/config
+          target: /etc/config/kratos
+    expose:
+      - 4433
+      - 4434
+    ports:
+      - name: public
+        host_ip: 127.0.0.1
+        target: 4433
+        protocol: tcp
+        published: 4433
+      - name: admin
+        host_ip: 127.0.0.1
+        target: 4434
+        protocol: tcp
+        published: 4434
+
+  hydra:
+    image: oryd/hydra:v2.3.0
+    entrypoint: ["/bin/sh", "/docker-entrypoint.sh"]
+    container_name: hydra
+    restart: "on-failure"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - DSN=${HYDRA_DSN:-memory}
+      - DEV=${HYDRA_DEV:-true}
+    volumes:
+      - type: bind
+        source: ./hydra/config
+        target: /etc/config/hydra
+      - type: bind
+        source: ./hydra/docker-entrypoint.sh
+        target: /docker-entrypoint.sh
+    develop:
+      watch:
+        - action: restart
+          path: ./hydra/config
+          target: /etc/config/hydra
+    expose:
+      - 4444
+      - 4445
+    ports:
+      - name: public
+        host_ip: 127.0.0.1
+        target: 4444
+        protocol: tcp
+        published: 4444
+      - name: admin
+        host_ip: 127.0.0.1
+        target: 4445
+        protocol: tcp
+        published: 4445
