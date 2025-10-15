@@ -9,6 +9,8 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       - DSN=${KRATOS_DNS:-memory}
+      - SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS=${KRATOS_OIDC_CONFIG_PROVIDERS:-[]}
+      - DEV=${KRATOS_DEV:-true}
     volumes:
       - type: bind
         source: ./kratos/config

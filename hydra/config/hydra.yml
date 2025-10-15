@@ -89,8 +89,6 @@ oauth2:
       jti_optional: false
       iat_optional: false
       max_ttl: 1h
-# refresh_token_hook: http://localhost:3000/token-refresh-hook
-# token_hook: http://localhost:3000/token-hook
 
 secrets:
   system:
