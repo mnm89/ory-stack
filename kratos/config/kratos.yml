@@ -3,7 +3,7 @@ version: v1.3.1
 
 serve:
   public:
-    base_url: http://localhost:4433
+    base_url: http://localhost:3000
     cors:
       enabled: false
 
@@ -137,7 +137,7 @@ courier:
       url: http://host.docker.internal:3001/kratos/email
       method: POST
       headers:
-        Content-Type: 'application/json'
+        Content-Type: "application/json"
       body: file:///etc/config/kratos/mail.template.jsonnet
       # auth:
       #   type: api_key
